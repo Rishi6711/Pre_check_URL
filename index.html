@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alex Vance // Cybersecurity Analyst & Systems Defense Engineer</title>
+    <meta name="description" content="Portfolio of Alex Vance — Senior Cybersecurity Analyst, Penetration Tester & Defense Engineer. CISSP, OSCP, AWS Certified. Discover defense telemetry, projects, and CVE advisories.">
+    <meta name="keywords" content="Cybersecurity Portfolio, Penetration Testing, SOC Analyst, CISSP, OSCP, DevSecOps, Vulnerability Management, Threat Intelligence">
+    <meta name="author" content="Alex Vance">
+
+    <!-- Open Graph Metadata -->
+    <meta property="og:title" content="Alex Vance // Cybersecurity Analyst & Systems Defense Engineer">
+    <meta property="og:description" content="Operational portfolio featuring defensive telemetry, security tooling, MITRE ATT&CK coverage, and coordinated disclosures.">
+    <meta property="og:type" content="website">
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="styles/main.css">
+
+    <!-- Favicon (Cyber Shield SVG data URI) -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300f0ff' stroke-width='2'><path d='M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z'/></svg>">
+</head>
+<body>
+
+    <!-- CRT Scanline Overlay Effect -->
+    <div class="scanlines-overlay" id="scanlines-overlay"></div>
+
+    <!-- Background Telemetry Particle Canvas -->
+    <canvas id="telemetry-canvas"></canvas>
+
+    <!-- Top Tactical Navigation & Telemetry Bar -->
+    <header class="top-telemetry-bar">
+        <div class="container telemetry-inner">
+            <a href="#hero" class="brand-wrapper">
+                <div class="brand-icon">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    </svg>
+                </div>
+                <div class="brand-text">
+                    <span class="brand-name">ALEX VANCE</span>
+                    <span class="brand-sub">SEC-OPS // OPERATOR</span>
+                </div>
+            </a>
+
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#terminal">Terminal</a></li>
+                    <li><a href="#skills">Capabilities</a></li>
+                    <li><a href="#mitre">MITRE Matrix</a></li>
+                    <li><a href="#certs">Certifications</a></li>
+                    <li><a href="#projects">Arsenal</a></li>
+                    <li><a href="#advisories">Advisories</a></li>
+                    <li><a href="#ctf">CTF</a></li>
+                    <li><a href="xox.html" style="color: #00f0ff; font-weight: 700; text-shadow: 0 0 10px rgba(0,240,255,0.6);">⚡ PLAY XOX</a></li>
+                    <li><a href="http://localhost:4000" target="_blank" style="color: #38bdf8; font-weight: 700; text-shadow: 0 0 10px rgba(56,189,248,0.6);">🛡️ PRE CHECK URL</a></li>
+                </ul>
+            </nav>
+
+            <div class="nav-controls">
+                <!-- SFX Toggle Button -->
+                <button class="hud-btn" id="btn-toggle-audio" title="Toggle Tactical Audio Effects">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="1" y1="1" x2="23" y2="23"/>
+                        <path d="M9 9v3a3 3 0 0 0 5.12 2.12M15 9.34V4a3 3 0 0 0-5.94-.6"/>
+                        <path d="M17 16.95A7 7 0 0 1 5 12v-2m14 0v2a7 7 0 0 1-.11 1.23"/>
+                        <line x1="12" y1="19" x2="12" y2="23"/>
+                        <line x1="8" y1="23" x2="16" y2="23"/>
+                    </svg>
+                    <span>SFX: MUTED</span>
+                </button>
+
+                <!-- Scanlines Toggle Button -->
+                <button class="hud-btn" id="btn-toggle-scanlines" title="Toggle CRT Scanline Aesthetics">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2"/>
+                        <line x1="8" y1="21" x2="16" y2="21"/>
+                        <line x1="12" y1="17" x2="12" y2="21"/>
+                    </svg>
+                    <span>CRT</span>
+                </button>
+
+                <!-- Status Pill -->
+                <div class="status-pill">
+                    <span class="pulse-dot"></span>
+                    <span>DEFCON 1: READY</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main>
+
+        <!-- Hero / Operator Identity Dossier -->
+        <section class="hero-section" id="hero">
+            <div class="container">
+                <div class="hero-grid">
+                    <div class="hero-content">
+                        <div class="clearance-badge" id="op-clearance">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                                <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                            </svg>
+                            LEVEL 4 // SEC-OPS AUTHORIZED
+                        </div>
+                        <h1 class="hero-title">
+                            DEFENDING CRITICAL INFRASTRUCTURE WITH <span class="glow-cyan">PRECISION</span>.
+                        </h1>
+                        <div class="hero-subtitle">
+                            <span class="t-green">❯</span>
+                            <span id="op-title">Cybersecurity Analyst & Systems Defense Engineer</span>
+                        </div>
+                        <p class="hero-bio" id="op-bio">
+                            Specializing in threat intelligence, cloud security posture management, and proactive vulnerability mitigation. Proven track record in securing enterprise infrastructure, conducting defensive audits, and building automated threat detection pipelines.
+                        </p>
+
+                        <div class="hero-cta-group">
+                            <a href="xox.html" class="btn-cyber-primary" id="btn-hero-xox" style="background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(255, 0, 127, 0.35)); border-color: #00f0ff; box-shadow: 0 0 15px rgba(0, 240, 255, 0.3);">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="18" y1="6" x2="6" y2="18"/>
+                                    <line x1="6" y1="6" x2="18" y2="18"/>
+                                </svg>
+                                <span>PLAY XOX GAME</span>
+                            </a>
+                            <a href="#terminal" class="btn-cyber-primary" id="btn-hero-terminal">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="4 17 10 11 4 5"/>
+                                    <line x1="12" y1="19" x2="20" y2="19"/>
+                                </svg>
+                                <span>INITIALIZE TERMINAL</span>
+                            </a>
+                            <a href="#advisories" class="btn-cyber-secondary" id="btn-hero-advisories">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                </svg>
+                                <span>VIEW ADVISORIES</span>
+                            </a>
+                            <a href="#contact" class="btn-cyber-secondary" id="btn-hero-contact">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                    <polyline points="22,6 12,13 2,6"/>
+                                </svg>
+                                <span>SECURE COMMS</span>
+                            </a>
+                        </div>
+
+                        <!-- Rapid Telemetry Stats Strip -->
+                        <div class="stats-strip" id="stats-strip">
+                            <!-- Injected via data.js -->
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Operator Dossier Card -->
+                    <div class="operator-card">
+                        <div class="card-topbar">
+                            <div class="terminal-dots">
+                                <span class="t-dot red"></span>
+                                <span class="t-dot yellow"></span>
+                                <span class="t-dot green"></span>
+                            </div>
+                            <span>OPERATOR_DOSSIER.ENC</span>
+                        </div>
+                        <div class="operator-body">
+                            <div class="operator-avatar-row">
+                                <div class="operator-avatar">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                                        <circle cx="12" cy="11" r="3"/>
+                                        <path d="M8 17s1-2 4-2 4 2 4 2"/>
+                                    </svg>
+                                </div>
+                                <div class="op-info">
+                                    <h3 id="op-name">Alex Vance</h3>
+                                    <p>STATUS: OPTIMAL</p>
+                                    <div class="op-id">ID: SEC-8941-AV</div>
+                                </div>
+                            </div>
+
+                            <div class="telemetry-kv-table">
+                                <div class="kv-row">
+                                    <span class="kv-key">PRIMARY FOCUS</span>
+                                    <span class="kv-val t-cyan">Threat Intel & Cloud Sec</span>
+                                </div>
+                                <div class="kv-row">
+                                    <span class="kv-key">ACCREDITATION</span>
+                                    <span class="kv-val t-green">CISSP // OSCP // AWS-SEC</span>
+                                </div>
+                                <div class="kv-row">
+                                    <span class="kv-key">LOCATION</span>
+                                    <span class="kv-val">San Francisco, CA / Remote</span>
+                                </div>
+                                <div class="kv-row">
+                                    <span class="kv-key">ACTIVE CLEARANCE</span>
+                                    <span class="kv-val t-red">CONFIDENTIAL // HIGH</span>
+                                </div>
+                            </div>
+
+                            <div class="pgp-preview-box">
+                                <div class="pgp-code" id="op-pgp-fingerprint">
+                                    4A9F 82C1 09E4 B33D 7F12 90D4 821E FB04
+                                </div>
+                                <button class="btn-copy-small" id="btn-copy-pgp" title="Copy Armored PGP Public Key">
+                                    COPY KEY
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Interactive SOC Console / Terminal Section -->
+        <section class="terminal-section" id="terminal">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Interactive Console</span>
+                    <h2 class="section-title">SOC COMMAND TELEMETRY</h2>
+                    <p class="section-desc">Query operator specs, inspect telemetry, or audit sandbox targets directly via the command interface.</p>
+                </div>
+
+                <div class="terminal-wrapper">
+                    <div class="terminal-header">
+                        <div class="terminal-title">
+                            <span class="pulse-dot"></span>
+                            <span>operator@alexvance:~ (zsh) — 80x24</span>
+                        </div>
+                        <div class="terminal-actions">
+                            <button class="terminal-action-btn" id="btn-clear-terminal">CLEAR</button>
+                        </div>
+                    </div>
+
+                    <div class="terminal-scroll-area" id="terminal-container">
+                        <div id="terminal-output"></div>
+                    </div>
+
+                    <form id="terminal-form" class="terminal-input-bar">
+                        <span class="terminal-prompt">operator@alexvance:~$</span>
+                        <input type="text" id="terminal-input" class="terminal-input-field" autocomplete="off" spellcheck="false" placeholder="Type 'help' and press Enter..." autofocus>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <!-- Capabilities & Specializations Section -->
+        <section class="skills-section" id="skills">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Core Competencies</span>
+                    <h2 class="section-title">DEFENSIVE & OFFENSIVE CAPABILITIES</h2>
+                    <p class="section-desc">Cross-domain security engineering spanning real-time threat detection, cloud posture hardening, and vulnerability auditing.</p>
+                </div>
+
+                <div class="skills-grid" id="skills-grid">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- MITRE ATT&CK Matrix Navigator -->
+        <section class="mitre-section" id="mitre">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Tactical Framework</span>
+                    <h2 class="section-title">MITRE ATT&CK DEFENSE READINESS</h2>
+                    <p class="section-desc">Mapped operational capabilities and automated behavioral detection rules across the primary enterprise attack vectors.</p>
+                </div>
+
+                <div class="mitre-card">
+                    <div class="mitre-grid" id="mitre-grid">
+                        <!-- Populated dynamically via app.js -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Certifications & Industry Accreditations -->
+        <section class="certs-section" id="certs">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Accreditations</span>
+                    <h2 class="section-title">VERIFIED CREDENTIALS</h2>
+                    <p class="section-desc">Globally recognized certifications verifying hands-on security architecture, penetration testing, and cloud compliance.</p>
+                </div>
+
+                <div class="certs-grid" id="certs-grid">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Security Projects & Arsenal -->
+        <section class="projects-section" id="projects">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Engineering Arsenal</span>
+                    <h2 class="section-title">SECURITY TOOLS & PIPELINES</h2>
+                    <p class="section-desc">Open-source defensive tooling, automated IOC aggregation engines, and container security scanners.</p>
+                </div>
+
+                <div class="projects-grid" id="projects-grid">
+                    <!-- Populated dynamically via app.js -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Coordinated Advisories & CVE Disclosures -->
+        <section class="advisories-section" id="advisories">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Responsible Disclosure</span>
+                    <h2 class="section-title">SECURITY ADVISORIES & DISCLOSURES</h2>
+                    <p class="section-desc">Documented vulnerabilities discovered and remediated in collaboration with enterprise vendors under coordinated disclosure.</p>
+                </div>
+
+                <div class="advisories-table-card">
+                    <table class="advisory-table">
+                        <thead>
+                            <tr>
+                                <th>Advisory ID</th>
+                                <th>CVSS 3.1 Severity</th>
+                                <th>Vulnerability Description</th>
+                                <th>Target Platform</th>
+                                <th>Status</th>
+                                <th>Disclosed Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="advisories-tbody">
+                            <!-- Populated dynamically via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTF Cryptographic Challenge Mini-Game -->
+        <section class="ctf-section" id="ctf">
+            <div class="container">
+                <div class="ctf-card">
+                    <div class="ctf-header-area">
+                        <div>
+                            <span class="ctf-tag">INTERACTIVE CTF MISSION</span>
+                            <h3 style="font-size: 1.4rem; color: #fff; margin-top: 0.35rem;">MISSION 01: RECRUITER DISPATCH CIPHER</h3>
+                        </div>
+                        <div class="t-mono t-cyan" style="font-size: 0.8rem;">CHALLENGE_FLAG // CRYPTO</div>
+                    </div>
+
+                    <p style="color: var(--text-secondary); margin-bottom: 1.25rem;">
+                        Can you decode the token below? Decode the payload to recover the verified flag format <code>SEC{...}</code> and unlock direct recruitment routing.
+                    </p>
+
+                    <div class="ctf-cipher-box">
+                        <div style="font-size: 0.72rem; color: var(--text-secondary); margin-bottom: 0.35rem;">ENCODED PAYLOAD [BASE64]:</div>
+                        <div class="ctf-cipher-string" id="ctf-cipher-string">
+                            U0VDe1ByMHQwYzBsXzFuc3Aza3RfNGwxeF92NG5jM18yMDI2fQ==
+                        </div>
+                    </div>
+
+                    <div class="ctf-form-row">
+                        <input type="text" id="ctf-flag-input" class="ctf-input" placeholder="Enter decoded flag (e.g. SEC{...})" autocomplete="off" spellcheck="false">
+                        <button type="button" class="btn-cyber-primary" id="btn-submit-flag">
+                            SUBMIT FLAG
+                        </button>
+                    </div>
+
+                    <div class="ctf-result-box" id="ctf-result-box"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secure Comms & Contact Section -->
+        <section class="contact-section" id="contact">
+            <div class="container">
+                <div class="section-header">
+                    <span class="section-tag">Encrypted Channels</span>
+                    <h2 class="section-title">ESTABLISH SECURE COMMS</h2>
+                    <p class="section-desc">Reach out for defensive audits, security consultations, or career inquiries via encrypted transmission.</p>
+                </div>
+
+                <div class="contact-grid">
+                    <div class="contact-info-card">
+                        <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.75rem;">DIRECT CHANNELS</h3>
+                        <p style="color: var(--text-secondary); font-size: 0.95rem; line-height: 1.6;">
+                            Available for select senior security roles, specialized contract audits, and advisory engagements. All messages handled with strict confidentiality.
+                        </p>
+
+                        <div class="contact-channels">
+                            <a href="mailto:alex.vance.sec@proton.me" class="contact-channel-item">
+                                <div class="channel-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
+                                        <polyline points="22,6 12,13 2,6"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="t-mono" style="font-size: 0.75rem; color: var(--text-muted);">PROTON SECURE MAIL</div>
+                                    <div style="font-weight: 600; color: #fff;">alex.vance.sec@proton.me</div>
+                                </div>
+                            </a>
+
+                            <a href="https://github.com" target="_blank" rel="noopener noreferrer" class="contact-channel-item">
+                                <div class="channel-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="t-mono" style="font-size: 0.75rem; color: var(--text-muted);">SOURCE REPOSITORIES</div>
+                                    <div style="font-weight: 600; color: #fff;">github.com/alexvance-sec</div>
+                                </div>
+                            </a>
+
+                            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" class="contact-channel-item">
+                                <div class="channel-icon">
+                                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+                                        <rect x="2" y="9" width="4" height="12"/>
+                                        <circle cx="4" cy="4" r="2"/>
+                                    </svg>
+                                </div>
+                                <div>
+                                    <div class="t-mono" style="font-size: 0.75rem; color: var(--text-muted);">PROFESSIONAL NETWORK</div>
+                                    <div style="font-weight: 600; color: #fff;">linkedin.com/in/alexvance-sec</div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- Encrypted Dispatch Form -->
+                    <div class="contact-form-card">
+                        <h3 style="font-size: 1.3rem; color: #fff; margin-bottom: 0.5rem;">TRANSMIT DISPATCH</h3>
+                        <p class="t-mono t-muted" style="font-size: 0.75rem; margin-bottom: 1.5rem;">
+                            SIMULATED ENCRYPTED HANDSHAKE // 256-BIT DISPATCH
+                        </p>
+
+                        <form id="secure-contact-form" class="contact-form">
+                            <div class="form-group">
+                                <label for="contact-name">Originator Designation / Name</label>
+                                <input type="text" id="contact-name" placeholder="e.g. Lead Recruiter / Security Director" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact-email">Return Comms / Email</label>
+                                <input type="email" id="contact-email" placeholder="e.g. contact@enterprise.org" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="contact-msg">Encrypted Message Payload</label>
+                                <textarea id="contact-msg" placeholder="Specify engagement details, role parameters, or audit scope..." required></textarea>
+                            </div>
+
+                            <button type="submit" class="btn-cyber-primary" id="btn-transmit-msg">
+                                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <line x1="22" y1="2" x2="11" y2="13"/>
+                                    <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                                </svg>
+                                <span>SEND ENCRYPTED DISPATCH</span>
+                            </button>
+
+                            <div class="form-status-alert" id="form-status-alert"></div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Tactical Footer -->
+    <footer class="footer">
+        <div class="container footer-inner">
+            <div>
+                © 2026 ALEX VANCE // SEC-OPS DEFENSE. ALL RIGHTS RESERVED.
+            </div>
+            <div class="t-cyan">
+                SYSTEM TELEMETRY: OPTIMAL // TLS 1.3 HARDENED
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="scripts/data.js"></script>
+    <script src="scripts/sound-fx.js"></script>
+    <script src="scripts/matrix-canvas.js"></script>
+    <script src="scripts/terminal.js"></script>
+    <script src="scripts/app.js"></script>
+</body>
+</html>

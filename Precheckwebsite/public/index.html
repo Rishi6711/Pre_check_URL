@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pre check URL</title>
+    <meta name="description" content="Pre check URL — Inspect redirected website pages, view screenshots, solve in-between human verification challenges, detect file downloads with extensions, and review full summary.">
+    
+    <!-- Google Fonts: Inter & JetBrains Mono -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Favicon SVG -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%230284c7' stroke-width='2.2'><path d='M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71'/><path d='M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71'/></svg>">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="app-layout">
+        <!-- Top Navigation Bar -->
+        <header class="top-nav">
+            <div class="nav-container">
+                <div class="brand">
+                    <div class="brand-icon">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/>
+                            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>
+                        </svg>
+                    </div>
+                    <div class="brand-info">
+                        <div class="brand-title">Pre check URL</div>
+                        <div class="brand-subtitle">Redirection Inspector • Visual Screenshots • Download Detection • Live Verification</div>
+                    </div>
+                </div>
+
+                <div class="nav-meta">
+                    <div class="status-indicator-pill" id="server-status-pill">
+                        <span class="status-dot online"></span>
+                        <span class="status-text" id="status-text">Engine Ready</span>
+                    </div>
+
+                    <!-- Free Attempts Counter (5 Free Attempts Before Login) -->
+                    <div class="attempts-indicator-pill" id="attempts-indicator-pill" title="Free attempts remaining before login is required">
+                        <span class="attempts-icon">⚡</span>
+                        <span class="attempts-text" id="attempts-count-text">5 / 5 Free Scans</span>
+                    </div>
+
+                    <!-- Auth Button / User Profile -->
+                    <div id="auth-nav-container">
+                        <button class="btn btn-primary btn-sm btn-nav-login" id="btn-open-login" title="Sign In or Create Account">
+                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <span>Sign In</span>
+                        </button>
+                        <div id="user-profile-badge" class="user-profile-badge" style="display:none;">
+                            <span class="user-avatar" id="nav-user-avatar">👤</span>
+                            <span class="user-email-text" id="nav-user-email">user@domain.com</span>
+                            <button class="btn-signout-link" id="btn-nav-logout" title="Sign out of account">Logout</button>
+                        </div>
+                    </div>
+
+                    <button class="btn btn-secondary btn-sm" id="btn-open-history" title="View Recent Inspections">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                        <span>History (<span id="history-count">0</span>)</span>
+                    </button>
+                    <button class="btn btn-pdf btn-sm" id="btn-export-pdf" style="display:none;" title="Download entire results as PDF (.pdf)">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                            <polyline points="14 2 14 8 20 8"/>
+                            <line x1="12" y1="18" x2="12" y2="12"/>
+                            <polyline points="9 15 12 18 15 15"/>
+                        </svg>
+                        <span>Download PDF (.pdf)</span>
+                    </button>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Body Content -->
+        <main class="main-content">
+            <!-- ======================================================== -->
+            <!-- URL ENTERING SECTION (LIGHT BLUE BACKGROUND REQUIRED)   -->
+            <!-- ======================================================== -->
+            <section class="url-input-section" id="url-entering-section">
+                <div class="section-container">
+                    <div class="hero-card">
+                        <div class="hero-header">
+                            <div class="hero-badge">
+                                <span class="badge-dot"></span>
+                                <span>URL Security Sandbox</span>
+                            </div>
+                            <h1>Pre check URL</h1>
+                            <p>Paste any URL in the box below to trace all redirected website pages, capture visual screenshots, interact with in-between human verification, detect automatic file downloads, and review the safety summary.</p>
+                        </div>
+
+                        <!-- URL Input Form -->
+                        <form id="scan-form" class="scan-form">
+                            <div class="input-wrapper">
+                                <div class="input-icon">
+                                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                                    </svg>
+                                </div>
+                                <input 
+                                    type="text" 
+                                    id="target-url-input" 
+                                    class="url-input" 
+                                    placeholder="Paste or enter URL here (e.g. http://github.com or short link...)" 
+                                    required 
+                                    autocomplete="off"
+                                    spellcheck="false"
+                                />
+                                <button type="button" class="btn-clear-input" id="btn-clear-input" title="Clear input" style="display:none;">
+                                    &times;
+                                </button>
+                                <button type="submit" class="btn btn-primary btn-inspect" id="btn-inspect">
+                                    <span class="btn-content">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                                            <polygon points="5 3 19 12 5 21 5 3"/>
+                                        </svg>
+                                        <span>CHECK URL</span>
+                                    </span>
+                                    <span class="spinner" style="display:none;"></span>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- Quick Scenario Simulation Chips -->
+                        <div class="quick-samples-bar">
+                            <span class="samples-label">Quick Test Scenarios:</span>
+                            <div class="sample-chips">
+                                <button class="chip" data-url="/test/chain-start">
+                                    <span class="chip-badge badge-redirect">301 ➔ 302</span>
+                                    <span>⚡ Multi-Hop Redirect Chain</span>
+                                </button>
+                                <button class="chip" data-url="/test/captcha-permission">
+                                    <span class="chip-badge badge-captcha">CAPTCHA</span>
+                                    <span>🛡️ In-Between Human Verification</span>
+                                </button>
+                                <button class="chip" data-url="/test/download-file?type=exe">
+                                    <span class="chip-badge badge-exe">.EXE DOWNLOAD</span>
+                                    <span>💾 File Download Trigger</span>
+                                </button>
+                                <button class="chip" data-url="/test/download-file?type=pdf">
+                                    <span class="chip-badge badge-pdf">.PDF FILE</span>
+                                    <span>📄 Document Download Trigger</span>
+                                </button>
+                                <button class="chip" data-url="/test/two-stage-flow">
+                                    <span class="chip-badge badge-stage">PAGE 1 ➔ 2</span>
+                                    <span>⚡ Two Successive Web Pages Flow</span>
+                                </button>
+                                <button class="chip" data-url="http://github.com">
+                                    <span class="chip-badge badge-web">REAL WEB</span>
+                                    <span>🌐 http://github.com</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Advanced Parameters Accordion -->
+                        <div class="advanced-options-toggle">
+                            <button type="button" id="btn-toggle-options" class="btn-link">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                                </svg>
+                                <span>Sandbox Viewport & Options</span>
+                            </button>
+                        </div>
+
+                        <div id="advanced-options-panel" class="advanced-options-panel" style="display:none;">
+                            <div class="options-grid">
+                                <div class="option-item">
+                                    <label for="opt-viewport">Viewport Resolution</label>
+                                    <select id="opt-viewport" class="select-input">
+                                        <option value="1280x800" selected>Desktop Laptop (1280 × 800)</option>
+                                        <option value="1920x1080">Full HD (1920 × 1080)</option>
+                                        <option value="1366x768">Standard Desktop (1366 × 768)</option>
+                                        <option value="390x844">Mobile Emulation (iPhone 390 × 844)</option>
+                                    </select>
+                                </div>
+                                <div class="option-item">
+                                    <label for="opt-timeout">Navigation Timeout</label>
+                                    <select id="opt-timeout" class="select-input">
+                                        <option value="25000" selected>25 seconds</option>
+                                        <option value="40000">40 seconds (Slow hosts)</option>
+                                        <option value="15000">15 seconds (Fast)</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Real-time Progress Bar -->
+            <section id="scan-progress-section" class="scan-progress-section" style="display:none;">
+                <div class="section-container">
+                    <div class="progress-card">
+                        <div class="progress-header">
+                            <div class="progress-title-group">
+                                <span class="pulse-indicator"></span>
+                                <span class="progress-title" id="progress-status-title">Connecting to target URL...</span>
+                            </div>
+                            <button class="btn btn-danger btn-xs" id="btn-cancel-scan">Cancel Inspection</button>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar-fill" id="progress-bar-fill"></div>
+                        </div>
+                        <div class="progress-footer">
+                            <span class="progress-detail" id="progress-status-detail">Navigating sandbox browser and tracking redirects...</span>
+                            <span class="progress-timer" id="progress-timer">00:00</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Error Banner -->
+            <div id="error-banner" class="alert-banner alert-danger" style="display:none;">
+                <div class="alert-icon">⚠️</div>
+                <div class="alert-content">
+                    <strong id="error-title">Inspection Error</strong>
+                    <p id="error-message">Failed to load target URL.</p>
+                </div>
+                <button class="btn-close-alert" onclick="this.parentElement.style.display='none'">&times;</button>
+            </div>
+
+            <!-- ======================================================== -->
+            <!-- OUTCOME SECTION (WHITE BACKGROUND REQUIRED BY USER)      -->
+            <!-- ======================================================== -->
+            <section id="outcomes-dashboard" class="outcomes-dashboard" style="display:none;">
+                <div class="section-container">
+                    
+                    <!-- Overview Ribbon -->
+                    <div class="telemetry-ribbon">
+                        <div class="ribbon-flow">
+                            <div class="telemetry-item">
+                                <div class="t-label-row">
+                                    <span class="t-label">Entered URL</span>
+                                    <span class="domain-age-tag" id="ribbon-initial-domain-age" style="display:none;"></span>
+                                </div>
+                                <div class="url-display-wrapper" id="ribbon-initial-url-wrapper">
+                                    <span class="t-value mono" id="ribbon-initial-url">-</span>
+                                </div>
+                            </div>
+                            <div class="telemetry-arrow">➔</div>
+                            <div class="telemetry-item">
+                                <div class="t-label-row">
+                                    <span class="t-label">Final Landed URL</span>
+                                    <span class="domain-age-tag" id="ribbon-final-domain-age" style="display:none;"></span>
+                                </div>
+                                <div class="url-display-wrapper" id="ribbon-final-url-wrapper">
+                                    <span class="t-value mono highlight" id="ribbon-final-url">-</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="telemetry-badges">
+                            <div id="ribbon-url-lock-badge" class="url-lock-pill" style="display:none;" title="URLs are locked non-clickable because file downloads were detected">
+                                <span>🔒 URLs Locked (Downloads Detected)</span>
+                            </div>
+                            <span class="badge" id="badge-total-hops">1 Hop</span>
+                            <span class="badge" id="badge-redirect-status">Direct</span>
+                            <span class="badge" id="badge-downloads-found">0 Downloads</span>
+                            <button class="btn btn-pdf-primary btn-sm" id="btn-ribbon-download-pdf" title="Download entire results in PDF format (.pdf)">
+                                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                    <polyline points="14 2 14 8 20 8"/>
+                                    <line x1="12" y1="18" x2="12" y2="12"/>
+                                    <polyline points="9 15 12 18 15 15"/>
+                                </svg>
+                                <span>Download PDF (.pdf)</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- 4 REQUIRED OUTCOME SECTIONS -->
+                    <div class="outcomes-grid">
+                        
+                        <!-- OUTCOME 1: SCREEN SHOT SECTION -->
+                        <div class="outcome-card" id="outcome-screenshots-card">
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <div class="header-icon icon-blue">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                                            <circle cx="8.5" cy="8.5" r="1.5"/>
+                                            <polyline points="21 15 16 10 5 21"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2>1. Screen Shot Section</h2>
+                                        <p class="subtitle">Visual screenshots of all redirected website pages</p>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    <span class="counter-badge" id="screenshot-count-badge">0 Screenshots</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="screenshot-gallery" id="screenshot-gallery">
+                                    <!-- Populated dynamically by app.js -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OUTCOME 2: REDIRECTED URL'S SECTION -->
+                        <div class="outcome-card" id="outcome-urls-card">
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <div class="header-icon icon-purple">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <polyline points="16 3 21 3 21 8"/>
+                                            <line x1="4" y1="20" x2="21" y2="3"/>
+                                            <polyline points="21 16 21 21 16 21"/>
+                                            <line x1="15" y1="15" x2="21" y2="21"/>
+                                            <line x1="4" y1="4" x2="9" y2="9"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2>2. Redirected URL's Section</h2>
+                                        <p class="subtitle">Complete sequence of redirected URLs with HTTP status codes and referral methods</p>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    <button class="btn btn-secondary btn-xs" id="btn-copy-chain">
+                                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                        </svg>
+                                        <span>Copy Chain</span>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="redirect-timeline" id="redirect-timeline">
+                                    <!-- Populated dynamically by app.js -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OUTCOME 3: FILE DOWNLOAD DETECTION SECTION -->
+                        <div class="outcome-card" id="outcome-downloads-card">
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <div class="header-icon icon-amber">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                                            <polyline points="7 10 12 15 17 10"/>
+                                            <line x1="12" y1="15" x2="12" y2="3"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2>3. File Download Detection Section</h2>
+                                        <p class="subtitle">Detection of files downloading during navigation (No permission given for download)</p>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    <span class="counter-badge" id="downloads-count-badge">0 Downloads</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="sandbox-security-notice">
+                                    <span class="shield-tag">🛡️ Sandbox Enforcement</span>
+                                    <span>No permission is granted for downloads. All triggered files are intercepted and blocked from reaching your device.</span>
+                                </div>
+                                <div id="downloads-container">
+                                    <!-- Populated dynamically by app.js -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- EXTRA TELEMETRY: DESTINATION IP'S & NETWORK INTELLIGENCE -->
+                        <div class="outcome-card" id="outcome-ips-card">
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <div class="header-icon icon-indigo">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <circle cx="12" cy="12" r="10"/>
+                                            <line x1="2" y1="12" x2="22" y2="12"/>
+                                            <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2>Destination IP's & Network Telemetry</h2>
+                                        <p class="subtitle">Server IP addresses, DNS resolution, Geo-location, and ASN/Hosting Provider</p>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    <span class="counter-badge" id="ips-count-badge">0 IP's</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="telemetry-table" id="destination-ips-table">
+                                        <thead>
+                                            <tr>
+                                                <th>Hostname</th>
+                                                <th>Destination IP</th>
+                                                <th>Protocol</th>
+                                                <th>Location / City</th>
+                                                <th>Hosting / ISP / ASN</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="destination-ips-tbody">
+                                            <!-- Populated dynamically -->
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- OUTCOME 4: DISPLAY THE SUMMARY (KEPT AT THE END OF THE PAGE AS REQUIRED BY USER) -->
+                        <div class="outcome-card" id="outcome-summary-card">
+                            <div class="card-header">
+                                <div class="header-left">
+                                    <div class="header-icon icon-emerald">
+                                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                                            <polyline points="14 2 14 8 20 8"/>
+                                            <line x1="16" y1="13" x2="8" y2="13"/>
+                                            <line x1="16" y1="17" x2="8" y2="17"/>
+                                            <polyline points="10 9 9 9 8 9"/>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <h2>4. Display the Summary</h2>
+                                        <p class="subtitle">High-level safety verdict, redirection metrics, SSL status, and forensics summary</p>
+                                    </div>
+                                </div>
+                                <div class="header-right">
+                                    <span class="verdict-pill" id="summary-verdict-pill">Safe</span>
+                                </div>
+                            </div>
+
+                            <div class="card-body">
+                                <div id="summary-container" class="summary-container">
+                                    <!-- Populated dynamically by app.js -->
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- Footer -->
+        <footer class="app-footer">
+            <div class="footer-container">
+                <div class="footer-left">
+                    <strong>Pre check URL</strong>
+                    <span class="separator">•</span>
+                    <span>Sandbox Redirection & Screenshot Forensics</span>
+                </div>
+                <div class="footer-right">
+                    <span>Engine v1.0.0</span>
+                    <span class="separator">•</span>
+                    <span class="live-tag"><span class="live-dot"></span> Active Protection</span>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- INTERACTIVE HUMAN VERIFICATION POPUP MODAL (REQUIRED BY USER) -->
+    <!-- ============================================================== -->
+    <div id="modal-verification" class="modal-overlay" style="display:none;">
+        <div class="modal-dialog modal-verification-dialog">
+            <div class="modal-header">
+                <div class="modal-title-group">
+                    <div class="modal-icon-badge warn-badge">
+                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="modal-title" id="modal-title-text">Human Verification Required on Page</h3>
+                        <p class="modal-subtitle" id="modal-challenge-reason">Security challenge detected. Please solve the challenge directly inside the page window below:</p>
+                    </div>
+                </div>
+                <div class="modal-actions" id="modal-stream-actions">
+                    <button class="btn btn-primary btn-sm" id="btn-manual-resolve" title="Click after solving challenge">
+                        <span>✓ I Have Completed It ➔</span>
+                    </button>
+                    <button class="btn btn-secondary btn-sm" id="btn-deny-permission" title="Skip verification">
+                        <span>Skip & Continue</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div id="modal-stream-step" class="verification-stream-wrapper">
+                    <!-- Instruction bar -->
+                    <div class="stream-instruction-bar">
+                        <span class="pulse-warn-dot"></span>
+                        <span class="instruction-text">
+                            <strong>Interactive Page Viewport:</strong> Click the verification box, checkbox, or puzzle directly inside this window to solve the challenge.
+                        </span>
+                    </div>
+
+                    <!-- Canvas for CDP Live Screencast & Mouse/Keyboard Interaction -->
+                    <div class="canvas-viewport-container" id="canvas-container">
+                        <canvas id="screencast-canvas" width="1280" height="800"></canvas>
+                        <div class="canvas-overlay-loader" id="canvas-loader">
+                            <div class="spinner"></div>
+                            <span>Connecting interactive viewport stream...</span>
+                        </div>
+                    </div>
+
+                    <div class="stream-footer-bar">
+                        <div class="stream-telemetry">
+                            <span>Challenge Page: <code id="challenge-current-url" class="mono">...</code></span>
+                        </div>
+                        <div class="stream-status">
+                            <span class="status-indicator"></span>
+                            <span id="challenge-status-indicator">Awaiting your interaction...</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- SCREENSHOT LIGHTBOX MODAL                                      -->
+    <!-- ============================================================== -->
+    <div id="modal-screenshot-lightbox" class="modal-overlay" style="display:none;">
+        <div class="modal-dialog modal-lightbox-dialog">
+            <div class="modal-header">
+                <div class="lightbox-info">
+                    <h3 id="lightbox-title">Screenshot Preview</h3>
+                    <p id="lightbox-url" class="mono">URL</p>
+                </div>
+                <div class="lightbox-actions">
+                    <a id="lightbox-download-link" class="btn btn-secondary btn-sm" download="screenshot.jpg">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        <span>Download Image</span>
+                    </a>
+                    <button class="btn btn-icon" id="btn-close-lightbox">&times;</button>
+                </div>
+            </div>
+            <div class="modal-body lightbox-body">
+                <div class="lightbox-image-wrapper">
+                    <img id="lightbox-img" src="" alt="Page Full Resolution Screenshot" />
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================== -->
+    <!-- SCAN HISTORY DRAWER                                            -->
+    <!-- ============================================================== -->
+    <div id="history-drawer" class="drawer-overlay" style="display:none;">
+        <div class="drawer">
+            <div class="drawer-header">
+                <h3>Inspection History</h3>
+                <button class="btn-icon" id="btn-close-history">&times;</button>
+            </div>
+            <div class="drawer-body">
+                <div id="history-list" class="history-list">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+            <div class="drawer-footer">
+                <button class="btn btn-secondary btn-sm w-100" id="btn-clear-history">Clear History</button>
+            </div>
+        </div>
+    </div>
+    <!-- ============================================================== -->
+    <!-- USER AUTHENTICATION / LOGIN MODAL (LIGHT BLUISH BACKGROUND)    -->
+    <!-- ============================================================== -->
+    <div id="modal-login" class="modal-overlay" style="display:none;">
+        <div class="modal-dialog modal-login-dialog">
+            <div class="login-card-container">
+                <!-- Header with light bluish tint and branding -->
+                <div class="login-card-header">
+                    <div class="login-brand-meta">
+                        <div class="login-icon-badge">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="login-title" id="login-title-text">Sign In to Pre check URL</h2>
+                            <p class="login-subtitle" id="login-subtitle-text">Unlock unlimited URL inspections, sandbox forensics, and PDF reports</p>
+                        </div>
+                    </div>
+                    <button class="btn-close-modal" id="btn-close-login" title="Close dialog">&times;</button>
+                </div>
+
+                <div class="login-card-body">
+                    <!-- 5 Free Attempts Limit Notice (Triggered when attempts reach 5) -->
+                    <div id="login-limit-alert" class="login-limit-alert" style="display:none;">
+                        <div class="limit-alert-icon">⚡</div>
+                        <div class="limit-alert-content">
+                            <strong>Free Inspection Limit Reached (5 / 5 Used)</strong>
+                            <p>You have used your 5 free guest URL checks. Please sign in or create an account to unlock unlimited inspections.</p>
+                        </div>
+                    </div>
+
+                    <!-- a. Sign-in with Google Button -->
+                    <button type="button" class="btn-google-auth" id="btn-google-auth" title="Sign in with your Google Account">
+                        <svg class="google-svg" width="18" height="18" viewBox="0 0 24 24">
+                            <path fill="#4285F4" d="M23.745 12.27c0-.7-.06-1.4-.19-2.07H12v4.51h6.6c-.29 1.52-1.14 2.8-2.4 3.65v3.05h3.88c2.27-2.09 3.665-5.17 3.665-9.14z"/>
+                            <path fill="#34A853" d="M12 24c3.24 0 5.95-1.08 7.93-2.91l-3.88-3.05c-1.08.72-2.45 1.16-4.05 1.16-3.12 0-5.77-2.1-6.72-4.93H1.25v3.15C3.26 21.36 7.34 24 12 24z"/>
+                            <path fill="#FBBC05" d="M5.28 14.27c-.25-.72-.38-1.49-.38-2.27s.13-1.55.38-2.27V6.58H1.25C.45 8.18 0 9.97 0 12s.45 3.82 1.25 5.42l4.03-3.15z"/>
+                            <path fill="#EA4335" d="M12 4.75c1.77 0 3.35.61 4.6 1.8l3.42-3.42C17.95 1.19 15.24 0 12 0 7.34 0 3.26 2.64 1.25 6.58l4.03 3.15c.95-2.83 3.6-4.98 6.72-4.98z"/>
+                        </svg>
+                        <span>Continue with Google</span>
+                    </button>
+
+                    <div class="login-divider">
+                        <span>or continue with password</span>
+                    </div>
+
+                    <!-- Email & Password Form -->
+                    <form id="auth-form" class="auth-form" novalidate>
+                        <div class="form-group" id="form-group-name" style="display:none;">
+                            <label for="auth-input-name" class="form-label">Full Name</label>
+                            <input type="text" id="auth-input-name" class="form-input" placeholder="e.g. Alex Rivera" autocomplete="name" />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="auth-input-email" class="form-label">Email Address</label>
+                            <input type="email" id="auth-input-email" class="form-input" placeholder="name@company.com" required autocomplete="email" />
+                        </div>
+
+                        <div class="form-group">
+                            <div class="label-header">
+                                <label for="auth-input-password" class="form-label">Password</label>
+                                <span class="policy-reminder">Policy: Min 12 chars & standard policies</span>
+                            </div>
+                            <div class="password-input-container">
+                                <input 
+                                    type="password" 
+                                    id="auth-input-password" 
+                                    class="form-input" 
+                                    placeholder="Enter password (minimum 12 characters)..." 
+                                    required 
+                                    autocomplete="current-password" 
+                                />
+                                <button type="button" class="btn-toggle-pwd" id="btn-toggle-pwd" title="Show or hide password">
+                                    <svg id="pwd-eye-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+                                    </svg>
+                                </button>
+                            </div>
+
+                            <!-- Live Password Strength Meter -->
+                            <div class="strength-meter-wrap" id="strength-meter-wrap">
+                                <div class="strength-meter-track">
+                                    <div class="strength-meter-bar" id="strength-meter-bar"></div>
+                                </div>
+                                <div class="strength-status-text" id="strength-status-text">Password Strength: Empty</div>
+                            </div>
+
+                            <!-- b. Password Policy Live Checklist (Min 12 char + standard policies) -->
+                            <div class="policies-checklist-box">
+                                <div class="checklist-heading">Standard Password Security Requirements:</div>
+                                <ul class="policy-checklist" id="policy-checklist">
+                                    <li class="policy-rule" id="rule-length">
+                                        <span class="rule-icon">✕</span>
+                                        <span>Minimum 12 characters in length</span>
+                                    </li>
+                                    <li class="policy-rule" id="rule-upper">
+                                        <span class="rule-icon">✕</span>
+                                        <span>At least one uppercase letter (A-Z)</span>
+                                    </li>
+                                    <li class="policy-rule" id="rule-lower">
+                                        <span class="rule-icon">✕</span>
+                                        <span>At least one lowercase letter (a-z)</span>
+                                    </li>
+                                    <li class="policy-rule" id="rule-number">
+                                        <span class="rule-icon">✕</span>
+                                        <span>At least one numeric digit (0-9)</span>
+                                    </li>
+                                    <li class="policy-rule" id="rule-special">
+                                        <span class="rule-icon">✕</span>
+                                        <span>At least one special character (!@#$%^&*...)</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <!-- Live Alert Error Box -->
+                        <div id="auth-error-box" class="auth-error-box" style="display:none;"></div>
+
+                        <button type="submit" class="btn btn-primary btn-auth-submit" id="btn-auth-submit">
+                            <span id="btn-auth-submit-label">Sign In & Unlock Unlimited Scans</span>
+                        </button>
+                    </form>
+
+                    <!-- Toggle Mode (Sign In <-> Create Account) -->
+                    <div class="auth-mode-switch">
+                        <span id="auth-switch-prompt">Don't have an account yet?</span>
+                        <button type="button" class="btn-text-action" id="btn-switch-auth-mode">Create an account</button>
+                    </div>
+
+                    <!-- Quick Demo Fill -->
+                    <div class="demo-login-hint">
+                        <span>Need a quick test login?</span>
+                        <button type="button" class="btn-demo-fill" id="btn-demo-fill">Fill Valid Credentials (12+ chars)</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Client Scripts -->
+    <script src="js/canvas-stream.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>
