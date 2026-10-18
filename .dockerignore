@@ -1,0 +1,5 @@
+**/node_modules
+.git
+.gemini
+Precheckwebsite/downloads/*
+!Precheckwebsite/downloads/.gitkeep
