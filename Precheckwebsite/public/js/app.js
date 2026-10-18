@@ -132,7 +132,18 @@
         userProfileBadge: document.getElementById('user-profile-badge'),
         navUserAvatar: document.getElementById('nav-user-avatar'),
         navUserEmail: document.getElementById('nav-user-email'),
-        btnNavLogout: document.getElementById('btn-nav-logout')
+        btnNavLogout: document.getElementById('btn-nav-logout'),
+        serverStatusPill: document.getElementById('server-status-pill'),
+        btnOpenBackendModal: document.getElementById('btn-open-backend-modal'),
+        modalBackendSettings: document.getElementById('modal-backend-settings'),
+        btnCloseBackend: document.getElementById('btn-close-backend'),
+        inputBackendUrl: document.getElementById('input-backend-url'),
+        btnTestBackend: document.getElementById('btn-test-backend'),
+        btnSaveBackend: document.getElementById('btn-save-backend'),
+        backendStatusTag: document.getElementById('backend-status-tag'),
+        backendTestResult: document.getElementById('backend-test-result'),
+        btnPresetLocal: document.getElementById('btn-preset-local'),
+        btnPresetReset: document.getElementById('btn-preset-reset')
     };
 
     // Initialize Application
@@ -145,12 +156,70 @@
     }
 
     let reconnectTimeout = null;
+    let manualBackendUrl = localStorage.getItem('precheck_backend_url') || '';
 
-    function getApiBase() {
-        if (window.location.protocol === 'file:' || !window.location.host || (window.location.port && window.location.port !== '4000')) {
+    // Check query param ?backend=https://... to automatically configure backend
+    try {
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has('backend')) {
+            const paramVal = urlParams.get('backend').trim();
+            if (paramVal) {
+                manualBackendUrl = paramVal.replace(/\/+$/, '');
+                localStorage.setItem('precheck_backend_url', manualBackendUrl);
+            }
+        }
+    } catch (_) {}
+
+    function isLocalhost() {
+        return window.location.hostname === 'localhost' || 
+               window.location.hostname === '127.0.0.1' || 
+               window.location.protocol === 'file:';
+    }
+
+    function isVercelDomain() {
+        return window.location.hostname.endsWith('.vercel.app');
+    }
+
+    function getBackendOrigin() {
+        if (manualBackendUrl) {
+            return manualBackendUrl.replace(/\/+$/, '');
+        }
+        if (isLocalhost()) {
             return 'http://localhost:4000';
         }
+        // If hosted on unified cloud platform (Render/Railway/Fly)
+        if (!isVercelDomain()) {
+            return window.location.origin;
+        }
         return '';
+    }
+
+    function getApiBase() {
+        const origin = getBackendOrigin();
+        if (origin) return origin;
+        if (isLocalhost()) return 'http://localhost:4000';
+        return '';
+    }
+
+    function getWebSocketUrl() {
+        const origin = getBackendOrigin();
+        if (origin) {
+            const wsProto = origin.startsWith('https:') ? 'wss:' : 'ws:';
+            const wsHost = origin.replace(/^https?:\/\//, '');
+            return `${wsProto}//${wsHost}/ws`;
+        }
+
+        if (isLocalhost()) {
+            return 'ws://localhost:4000/ws';
+        }
+
+        if (isVercelDomain()) {
+            // Vercel serverless functions cannot handle WebSockets
+            return null;
+        }
+
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        return `${protocol}//${window.location.host}/ws`;
     }
 
     // Initialize WebSocket Connection
@@ -160,16 +229,18 @@
             reconnectTimeout = null;
         }
 
-        let protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        let host = window.location.host;
+        const wsUrl = getWebSocketUrl();
+        const statusPill = document.getElementById('server-status-pill');
 
-        // Fallback for file:// protocol or running on alternate dev server ports (e.g. Live Server 5500)
-        if (!host || window.location.protocol === 'file:' || (window.location.port && window.location.port !== '4000')) {
-            host = 'localhost:4000';
-            protocol = 'ws:';
+        if (!wsUrl) {
+            // Running on Vercel without a configured backend engine
+            if (statusPill) {
+                statusPill.innerHTML = '<span class="status-dot warning"></span><span class="status-text">Setup Backend</span>';
+                statusPill.title = 'Running on Vercel: Click to connect your free Render/Railway backend engine';
+            }
+            updateBackendStatusTag('offline', 'Setup Required');
+            return;
         }
-
-        const wsUrl = `${protocol}//${host}/ws`;
 
         try {
             if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
@@ -179,10 +250,11 @@
             ws = new WebSocket(wsUrl);
 
             ws.onopen = () => {
-                const statusPill = document.getElementById('server-status-pill');
                 if (statusPill) {
                     statusPill.innerHTML = '<span class="status-dot online"></span><span class="status-text">Engine Ready</span>';
+                    statusPill.title = `Connected to backend engine at ${wsUrl} • Click to configure`;
                 }
+                updateBackendStatusTag('online', 'Connected');
             };
 
             ws.onmessage = (event) => {
@@ -199,20 +271,141 @@
             };
 
             ws.onclose = () => {
-                const statusPill = document.getElementById('server-status-pill');
                 if (statusPill) {
-                    statusPill.innerHTML = '<span class="status-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span><span class="status-text">Disconnected (Reconnecting...)</span>';
+                    statusPill.innerHTML = '<span class="status-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span><span class="status-text">Disconnected (Click to Config)</span>';
+                    statusPill.title = `Unable to connect to ${wsUrl} • Click to change backend settings`;
                 }
-                reconnectTimeout = setTimeout(initWebSocket, 2000);
+                updateBackendStatusTag('offline', 'Disconnected');
+                reconnectTimeout = setTimeout(initWebSocket, 2500);
             };
         } catch (err) {
             console.error('Failed to initialize WebSocket:', err);
-            const statusPill = document.getElementById('server-status-pill');
             if (statusPill) {
-                statusPill.innerHTML = '<span class="status-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span><span class="status-text">Disconnected (Reconnecting...)</span>';
+                statusPill.innerHTML = '<span class="status-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span><span class="status-text">Disconnected (Click to Config)</span>';
             }
-            reconnectTimeout = setTimeout(initWebSocket, 2500);
+            updateBackendStatusTag('offline', 'Error');
+            reconnectTimeout = setTimeout(initWebSocket, 3000);
         }
+    }
+
+    // Backend Settings Modal Handlers
+    function openBackendModal() {
+        if (!elements.modalBackendSettings) return;
+        elements.modalBackendSettings.style.display = 'flex';
+        if (elements.inputBackendUrl) {
+            elements.inputBackendUrl.value = manualBackendUrl || (isLocalhost() ? 'http://localhost:4000' : '');
+        }
+        if (elements.backendTestResult) {
+            elements.backendTestResult.style.display = 'none';
+        }
+        checkBackendStatusSilent();
+    }
+
+    function closeBackendModal() {
+        if (!elements.modalBackendSettings) return;
+        elements.modalBackendSettings.style.display = 'none';
+    }
+
+    function updateBackendStatusTag(statusClass, label) {
+        if (!elements.backendStatusTag) return;
+        elements.backendStatusTag.className = `backend-status-tag ${statusClass}`;
+        elements.backendStatusTag.textContent = label;
+    }
+
+    async function checkBackendStatusSilent() {
+        const base = getApiBase();
+        if (!base) {
+            updateBackendStatusTag('offline', 'Not Configured');
+            return;
+        }
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 3500);
+            const res = await fetch(`${base}/api/health`, { method: 'GET', signal: controller.signal });
+            clearTimeout(timeoutId);
+            if (res.ok) {
+                updateBackendStatusTag('online', 'Online');
+            } else {
+                updateBackendStatusTag('offline', 'Offline');
+            }
+        } catch (_) {
+            updateBackendStatusTag('offline', 'Unreachable');
+        }
+    }
+
+    async function testBackendConnection() {
+        let testUrl = elements.inputBackendUrl ? elements.inputBackendUrl.value.trim() : '';
+        if (!testUrl) {
+            testUrl = isLocalhost() ? 'http://localhost:4000' : '';
+        }
+        testUrl = testUrl.replace(/\/+$/, '');
+
+        if (!testUrl) {
+            showBackendTestResult('error', 'Please enter a Backend URL (e.g. https://your-backend.onrender.com or http://localhost:4000)');
+            return;
+        }
+
+        if (elements.btnTestBackend) {
+            elements.btnTestBackend.disabled = true;
+            elements.btnTestBackend.textContent = 'Testing...';
+        }
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 7000);
+            const res = await fetch(`${testUrl}/api/health`, {
+                signal: controller.signal,
+                method: 'GET'
+            });
+            clearTimeout(timeoutId);
+
+            if (res.ok) {
+                const data = await res.json().catch(() => ({}));
+                const engine = data.browserEngine || 'Chrome';
+                showBackendTestResult('success', `✅ Connection verified! Backend is online. Browser engine: ${engine}`);
+                updateBackendStatusTag('online', 'Verified');
+            } else {
+                showBackendTestResult('error', `⚠️ Server reachable, but returned HTTP ${res.status}. Expected 200 OK from /api/health.`);
+                updateBackendStatusTag('offline', 'Error');
+            }
+        } catch (err) {
+            showBackendTestResult('error', `❌ Cannot reach ${testUrl}/api/health. Ensure your backend service is deployed and running.`);
+            updateBackendStatusTag('offline', 'Failed');
+        } finally {
+            if (elements.btnTestBackend) {
+                elements.btnTestBackend.disabled = false;
+                elements.btnTestBackend.textContent = 'Test';
+            }
+        }
+    }
+
+    function showBackendTestResult(type, msg) {
+        if (!elements.backendTestResult) return;
+        elements.backendTestResult.className = `backend-test-result ${type}`;
+        elements.backendTestResult.textContent = msg;
+        elements.backendTestResult.style.display = 'block';
+    }
+
+    function saveBackendUrl() {
+        let newUrl = elements.inputBackendUrl ? elements.inputBackendUrl.value.trim() : '';
+        newUrl = newUrl.replace(/\/+$/, '');
+
+        manualBackendUrl = newUrl;
+        if (newUrl) {
+            localStorage.setItem('precheck_backend_url', newUrl);
+            showToast(`Backend updated: ${newUrl}`, 'success');
+        } else {
+            localStorage.removeItem('precheck_backend_url');
+            showToast('Backend set to auto-detect.', 'info');
+        }
+
+        if (ws) {
+            try { ws.close(); } catch (_) {}
+            ws = null;
+        }
+
+        closeBackendModal();
+        initWebSocket();
     }
 
     // Initialize Screencast Controller for Live Canvas Interaction
@@ -390,6 +583,40 @@
 
         if (elements.btnNavLogout) {
             elements.btnNavLogout.addEventListener('click', handleLogout);
+        }
+
+        // ==========================================
+        // BACKEND ENGINE SETTINGS MODAL CONTROLLERS
+        // ==========================================
+        if (elements.serverStatusPill) {
+            elements.serverStatusPill.addEventListener('click', openBackendModal);
+        }
+        if (elements.btnOpenBackendModal) {
+            elements.btnOpenBackendModal.addEventListener('click', openBackendModal);
+        }
+        if (elements.btnCloseBackend) {
+            elements.btnCloseBackend.addEventListener('click', closeBackendModal);
+        }
+        if (elements.modalBackendSettings) {
+            elements.modalBackendSettings.addEventListener('click', (e) => {
+                if (e.target === elements.modalBackendSettings) closeBackendModal();
+            });
+        }
+        if (elements.btnTestBackend) {
+            elements.btnTestBackend.addEventListener('click', testBackendConnection);
+        }
+        if (elements.btnSaveBackend) {
+            elements.btnSaveBackend.addEventListener('click', saveBackendUrl);
+        }
+        if (elements.btnPresetLocal) {
+            elements.btnPresetLocal.addEventListener('click', () => {
+                if (elements.inputBackendUrl) elements.inputBackendUrl.value = 'http://localhost:4000';
+            });
+        }
+        if (elements.btnPresetReset) {
+            elements.btnPresetReset.addEventListener('click', () => {
+                if (elements.inputBackendUrl) elements.inputBackendUrl.value = '';
+            });
         }
     }
 
@@ -817,7 +1044,13 @@
                 }
             }));
         } else {
-            showError('Server Disconnected', 'Cannot connect to backend server. Retrying connection...');
+            const isVercel = isVercelDomain();
+            if (isVercel && !manualBackendUrl) {
+                openBackendModal();
+                showError('Backend Engine Required', 'Vercel is a serverless platform that requires a persistent backend engine (e.g. Render / Railway). Please connect your backend in the dialog.');
+            } else {
+                showError('Server Disconnected', 'Cannot connect to backend server. Retrying connection... Click the Backend button or status pill to check settings.');
+            }
             endScan();
         }
     }

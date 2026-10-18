@@ -37,10 +37,20 @@
                 </div>
 
                 <div class="nav-meta">
-                    <div class="status-indicator-pill" id="server-status-pill">
+                    <div class="status-indicator-pill clickable" id="server-status-pill" title="Click to view Backend Engine Connection & Settings">
                         <span class="status-dot online"></span>
                         <span class="status-text" id="status-text">Engine Ready</span>
                     </div>
+
+                    <button class="btn btn-secondary btn-sm btn-backend-nav" id="btn-open-backend-modal" title="Backend Server Settings (for Vercel, Render, Railway)">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                            <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                            <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                            <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                        </svg>
+                        <span>Backend</span>
+                    </button>
 
                     <!-- Free Attempts Counter (5 Free Attempts Before Login) -->
                     <div class="attempts-indicator-pill" id="attempts-indicator-pill" title="Free attempts remaining before login is required">
@@ -575,6 +585,88 @@
             </div>
         </div>
     </div>
+    <!-- ============================================================== -->
+    <!-- BACKEND CONNECTION & VERCEL SETTINGS MODAL                     -->
+    <!-- ============================================================== -->
+    <div id="modal-backend-settings" class="modal-overlay" style="display:none;">
+        <div class="modal-dialog modal-backend-dialog">
+            <div class="login-card-container">
+                <div class="login-card-header">
+                    <div class="login-brand-meta">
+                        <div class="login-icon-badge" style="background: rgba(14, 165, 233, 0.15); color: #0284c7;">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.3">
+                                <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                                <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                                <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                                <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 class="login-title">Backend Engine Settings</h2>
+                            <p class="login-subtitle">Connect your persistent Chrome sandbox &amp; WebSocket engine</p>
+                        </div>
+                    </div>
+                    <button class="btn-close-modal" id="btn-close-backend" title="Close dialog">&times;</button>
+                </div>
+
+                <div class="login-card-body">
+                    <!-- Informative Banner about Vercel -->
+                    <div class="backend-info-banner">
+                        <div class="banner-icon">💡</div>
+                        <div class="banner-text">
+                            <strong>Hosting on Vercel?</strong>
+                            <p>Vercel is a serverless platform that does not support persistent WebSockets or long-running Chromium sandboxes. When hosting on Vercel, this frontend connects to your free backend engine hosted on <strong>Render</strong>, <strong>Railway</strong>, or any cloud server.</p>
+                        </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 16px;">
+                        <label for="input-backend-url" class="form-label" style="display:flex; justify-content:space-between; align-items:center;">
+                            <span>Backend Engine URL:</span>
+                            <span id="backend-status-tag" class="backend-status-tag checking">Checking...</span>
+                        </label>
+                        <div class="input-with-action">
+                            <input type="url" id="input-backend-url" class="form-control" placeholder="https://your-backend.onrender.com" />
+                            <button type="button" id="btn-test-backend" class="btn btn-secondary btn-sm">Test</button>
+                        </div>
+                        <span class="form-hint">Leave blank or enter <code>http://localhost:4000</code> if running locally.</span>
+                    </div>
+
+                    <div id="backend-test-result" class="backend-test-result" style="display:none;"></div>
+
+                    <div class="backend-actions-row">
+                        <button type="button" id="btn-save-backend" class="btn btn-primary w-100">
+                            Save &amp; Connect Engine
+                        </button>
+                    </div>
+
+                    <div class="backend-quick-presets">
+                        <button type="button" class="btn-preset" id="btn-preset-local">💻 Set Localhost (4000)</button>
+                        <button type="button" class="btn-preset" id="btn-preset-reset">🔄 Reset to Auto-Detect</button>
+                    </div>
+
+                    <!-- Step-by-Step Render Deployment Guide -->
+                    <div class="backend-guide-box">
+                        <div class="guide-header">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <polygon points="12 2 2 7 12 12 22 7 12 2"></polygon>
+                                <polyline points="2 17 12 22 22 17"></polyline>
+                                <polyline points="2 12 12 17 22 12"></polyline>
+                            </svg>
+                            <span>How to Deploy Free Backend to Render in 2 Mins</span>
+                        </div>
+                        <ol class="guide-steps">
+                            <li>Push this repository to your GitHub.</li>
+                            <li>Go to <a href="https://dashboard.render.com" target="_blank" rel="noopener">Render Dashboard</a> (100% Free).</li>
+                            <li>Click <strong>New +</strong> &rarr; <strong>Web Service</strong> and select your GitHub repository.</li>
+                            <li>Render automatically detects the included <code>Dockerfile</code> / <code>render.yaml</code> and builds Chromium.</li>
+                            <li>Copy your Render Web Service URL (e.g. <code>https://precheck-xxx.onrender.com</code>), paste it in the box above, and click <strong>Save &amp; Connect</strong>!</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- ============================================================== -->
     <!-- USER AUTHENTICATION / LOGIN MODAL (LIGHT BLUISH BACKGROUND)    -->
     <!-- ============================================================== -->

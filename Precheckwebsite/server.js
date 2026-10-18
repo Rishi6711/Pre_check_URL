@@ -13,10 +13,28 @@ const wss = new WebSocket.Server({ server, path: '/ws' });
 
 const PORT = process.env.PORT || 4000;
 
-app.use(cors());
+app.use(cors({
+    origin: true,
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
 app.use(express.json({ limit: '60mb' }));
 app.use(express.urlencoded({ extended: true, limit: '60mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+// Health check endpoint for connection verification from Vercel / remote clients
+app.get('/api/health', (req, res) => {
+    const browserPath = getBrowserExecutablePath();
+    res.json({
+        success: true,
+        status: 'online',
+        service: 'Pre check URL Backend Engine',
+        browserReady: !!browserPath,
+        browserEngine: browserPath ? path.basename(browserPath) : 'None detected',
+        time: new Date().toISOString()
+    });
+});
 
 // Ensure downloads directory exists for sandbox downloads
 const downloadsDir = path.join(__dirname, 'downloads');
@@ -24,14 +42,24 @@ if (!fs.existsSync(downloadsDir)) {
     fs.mkdirSync(downloadsDir, { recursive: true });
 }
 
-// Locate Chrome or Edge browser executable
+// Locate Chrome or Chromium browser executable across Windows, Linux, Docker, and Cloud Containers
 function getBrowserExecutablePath() {
     const candidatePaths = [
+        process.env.PUPPETEER_EXECUTABLE_PATH || '',
+        process.env.CHROME_PATH || '',
+        process.env.CHROME_BIN || '',
+        // Linux / Docker / Cloud environments (Render, Railway, Ubuntu, Debian, AWS)
+        '/usr/bin/google-chrome-stable',
+        '/usr/bin/google-chrome',
+        '/usr/bin/chromium',
+        '/usr/bin/chromium-browser',
+        '/snap/bin/chromium',
+        '/usr/local/bin/chrome',
+        // Windows Desktop paths
         'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',
         'C:\\Program Files (x86)\\Google\\Chrome\\Application\\chrome.exe',
         'C:\\Program Files (x86)\\Microsoft\\Edge\\Application\\msedge.exe',
-        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe',
-        process.env.CHROME_PATH || ''
+        'C:\\Program Files\\Microsoft\\Edge\\Application\\msedge.exe'
     ];
     for (const p of candidatePaths) {
         if (p && fs.existsSync(p)) return p;
@@ -2134,11 +2162,13 @@ app.get('/api/auth/me', (req, res) => {
     });
 });
 
-server.listen(PORT, () => {
+const HOST = process.env.HOST || '0.0.0.0';
+
+server.listen(PORT, HOST, () => {
     console.log(`=======================================================`);
     console.log(`Pre Check URL Server Running!`);
-    console.log(`Dashboard URL:  http://localhost:${PORT}`);
-    console.log(`WebSocket URL:  ws://localhost:${PORT}/ws`);
+    console.log(`Host / Port:    http://${HOST}:${PORT}`);
+    console.log(`WebSocket URL:  ws://${HOST}:${PORT}/ws`);
     console.log(`Browser Engine: ${getBrowserExecutablePath() || 'None detected'}`);
     console.log(`=======================================================`);
 });

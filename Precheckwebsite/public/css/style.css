@@ -2298,3 +2298,227 @@ body {
     color: #ffffff;
 }
 
+/* ============================================================== */
+/* BACKEND SETTINGS MODAL & CLOUD HOSTING UI                      */
+/* ============================================================== */
+.status-indicator-pill.clickable {
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.status-indicator-pill.clickable:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.2);
+    border-color: #0284c7;
+}
+
+.status-dot.warning {
+    background: #f59e0b;
+    box-shadow: 0 0 8px #f59e0b;
+    animation: pulse-warn 1.5s infinite;
+}
+
+@keyframes pulse-warn {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.6; transform: scale(1.15); }
+}
+
+.btn-backend-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 9999px;
+    cursor: pointer;
+    transition: var(--transition);
+}
+
+.btn-backend-nav:hover {
+    background: #f8fafc;
+    border-color: #0284c7;
+    color: #0284c7;
+}
+
+.modal-backend-dialog {
+    max-width: 540px;
+    width: 92%;
+}
+
+.backend-info-banner {
+    display: flex;
+    gap: 12px;
+    background: #eff6ff;
+    border: 1px solid #bfdbfe;
+    border-radius: 10px;
+    padding: 12px 14px;
+    margin-bottom: 16px;
+    font-size: 0.8rem;
+    line-height: 1.45;
+    color: #1e40af;
+}
+
+.backend-info-banner .banner-icon {
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.backend-info-banner strong {
+    display: block;
+    font-weight: 700;
+    margin-bottom: 3px;
+    color: #1e3a8a;
+}
+
+.backend-info-banner p {
+    margin: 0;
+    color: #3b82f6;
+    font-size: 0.77rem;
+}
+
+.backend-status-tag {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.backend-status-tag.online {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.backend-status-tag.offline {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.backend-status-tag.checking {
+    background: #f1f5f9;
+    color: #64748b;
+    border: 1px solid #e2e8f0;
+}
+
+.input-with-action {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+}
+
+.input-with-action input {
+    flex: 1;
+}
+
+.backend-actions-row {
+    margin-top: 14px;
+}
+
+.backend-quick-presets {
+    display: flex;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.btn-preset {
+    flex: 1;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    color: #475569;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 6px 10px;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: var(--transition);
+    text-align: center;
+}
+
+.btn-preset:hover {
+    background: #f0f9ff;
+    border-color: #0284c7;
+    color: #0284c7;
+}
+
+.backend-test-result {
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.78rem;
+    margin-top: 10px;
+}
+
+.backend-test-result.success {
+    background: #ecfdf5;
+    border: 1px solid #a7f3d0;
+    color: #065f46;
+}
+
+.backend-test-result.error {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+    color: #991b1b;
+}
+
+.backend-guide-box {
+    margin-top: 18px;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 14px 16px;
+}
+
+.backend-guide-box .guide-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: #0f172a;
+    margin-bottom: 10px;
+}
+
+.backend-guide-box .guide-header svg {
+    color: #0284c7;
+}
+
+.guide-steps {
+    margin: 0;
+    padding-left: 18px;
+    font-size: 0.77rem;
+    color: #475569;
+    line-height: 1.6;
+}
+
+.guide-steps li {
+    margin-bottom: 5px;
+}
+
+.guide-steps strong {
+    color: #0f172a;
+}
+
+.guide-steps code {
+    background: #e2e8f0;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+}
+
+.guide-steps a {
+    color: #0284c7;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.guide-steps a:hover {
+    text-decoration: underline;
+}
+

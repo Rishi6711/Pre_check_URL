@@ -75,3 +75,51 @@ cd Precheckwebsite
 npm test
 ```
 All tests verify multi-hop redirects, `.exe` download blocking, `.pdf` download detection, and interactive CAPTCHA modal resolution.
+
+---
+
+## 🌐 Cloud Hosting & Deployment Guide (Vercel + Free Render Backend)
+
+### Why does Vercel show "Server Disconnected"?
+**Vercel is a serverless platform (AWS Lambda).** Serverless functions:
+1. Terminate after each HTTP request and **cannot maintain persistent WebSockets** (`ws://` / `wss://`).
+2. Do not allow background long-running Chromium processes to stream live 30fps screencasts and interactive CAPTCHA clicks.
+
+To host on Vercel, the architecture is:
+- **Frontend** runs on **Vercel's Global Edge CDN** (blazing fast loading, custom domains).
+- **Backend Engine** runs on a free persistent Node.js host like **Render.com** or **Railway.app** (runs Chromium + WebSockets).
+
+---
+
+### Step-by-Step Setup:
+
+#### Step 1: Deploy Free Backend Engine on Render (Takes 2 minutes)
+1. Push this repository to your GitHub account.
+2. Go to **[Render.com Dashboard](https://dashboard.render.com)** (100% Free).
+3. Click **New +** &rarr; **Web Service**.
+4. Connect your GitHub repository.
+5. Render will automatically detect the included **`Dockerfile`** / **`render.yaml`** and pre-install Chromium.
+6. Click **Create Web Service**.
+7. Once deployed, copy your Render URL: e.g. `https://precheck-engine.onrender.com`.
+
+*(You can verify it by visiting `https://your-engine.onrender.com/api/health` — it will return `{"status":"online", "browserReady": true}`).*
+
+---
+
+#### Step 2: Deploy Frontend on Vercel
+1. In your **[Vercel Dashboard](https://vercel.com/dashboard)**, click **Add New...** &rarr; **Project**.
+2. Import the same GitHub repository.
+3. The included **`vercel.json`** will automatically configure the static output from `public/`.
+4. Click **Deploy**.
+
+---
+
+#### Step 3: Connect Frontend to Backend Engine
+1. Open your Vercel deployment URL: `https://your-project.vercel.app`.
+2. Click the **Backend** button (or the status pill) in the top navigation bar.
+3. Paste your Render backend URL (e.g. `https://precheck-engine.onrender.com`).
+4. Click **Test & Save**.
+5. The status indicator will turn **🟢 Engine Ready**, and you can perform full URL forensics, live interactive verification, and file download interception from your Vercel site!
+
+> **Tip:** You can also share direct links with the backend pre-configured by appending `?backend=https://your-engine.onrender.com` to your Vercel URL!
+
