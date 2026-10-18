@@ -144,36 +144,75 @@
         loadHistoryCount();
     }
 
+    let reconnectTimeout = null;
+
+    function getApiBase() {
+        if (window.location.protocol === 'file:' || !window.location.host || (window.location.port && window.location.port !== '4000')) {
+            return 'http://localhost:4000';
+        }
+        return '';
+    }
+
     // Initialize WebSocket Connection
     function initWebSocket() {
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        const wsUrl = `${protocol}//${window.location.host}/ws`;
+        if (reconnectTimeout) {
+            clearTimeout(reconnectTimeout);
+            reconnectTimeout = null;
+        }
 
-        ws = new WebSocket(wsUrl);
+        let protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        let host = window.location.host;
 
-        ws.onopen = () => {
-            const statusPill = document.getElementById('server-status-pill');
-            if (statusPill) {
-                statusPill.innerHTML = '<span class="status-dot online"></span><span class="status-text">Engine Ready</span>';
+        // Fallback for file:// protocol or running on alternate dev server ports (e.g. Live Server 5500)
+        if (!host || window.location.protocol === 'file:' || (window.location.port && window.location.port !== '4000')) {
+            host = 'localhost:4000';
+            protocol = 'ws:';
+        }
+
+        const wsUrl = `${protocol}//${host}/ws`;
+
+        try {
+            if (ws && (ws.readyState === WebSocket.OPEN || ws.readyState === WebSocket.CONNECTING)) {
+                return;
             }
-        };
 
-        ws.onmessage = (event) => {
-            try {
-                const data = JSON.parse(event.data);
-                handleServerMessage(data);
-            } catch (err) {
-                console.error('Failed to parse WebSocket message:', err);
-            }
-        };
+            ws = new WebSocket(wsUrl);
 
-        ws.onclose = () => {
+            ws.onopen = () => {
+                const statusPill = document.getElementById('server-status-pill');
+                if (statusPill) {
+                    statusPill.innerHTML = '<span class="status-dot online"></span><span class="status-text">Engine Ready</span>';
+                }
+            };
+
+            ws.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+                    handleServerMessage(data);
+                } catch (err) {
+                    console.error('Failed to parse WebSocket message:', err);
+                }
+            };
+
+            ws.onerror = (err) => {
+                console.warn('WebSocket connection error:', err);
+            };
+
+            ws.onclose = () => {
+                const statusPill = document.getElementById('server-status-pill');
+                if (statusPill) {
+                    statusPill.innerHTML = '<span class="status-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span><span class="status-text">Disconnected (Reconnecting...)</span>';
+                }
+                reconnectTimeout = setTimeout(initWebSocket, 2000);
+            };
+        } catch (err) {
+            console.error('Failed to initialize WebSocket:', err);
             const statusPill = document.getElementById('server-status-pill');
             if (statusPill) {
                 statusPill.innerHTML = '<span class="status-dot" style="background:#f43f5e; box-shadow:0 0 8px #f43f5e;"></span><span class="status-text">Disconnected (Reconnecting...)</span>';
             }
-            setTimeout(initWebSocket, 2500);
-        };
+            reconnectTimeout = setTimeout(initWebSocket, 2500);
+        }
     }
 
     // Initialize Screencast Controller for Live Canvas Interaction
@@ -602,7 +641,7 @@
             }
         }
 
-        const endpoint = authMode === 'register' ? '/api/auth/register' : '/api/auth/login';
+        const endpoint = authMode === 'register' ? `${getApiBase()}/api/auth/register` : `${getApiBase()}/api/auth/login`;
         const payload = authMode === 'register' ? { name, email, password } : { email, password };
 
         if (elements.btnAuthSubmit) elements.btnAuthSubmit.disabled = true;
@@ -642,7 +681,7 @@
         if (elements.btnGoogleAuth) elements.btnGoogleAuth.disabled = true;
 
         try {
-            const res = await fetch('/api/auth/google', {
+            const res = await fetch(`${getApiBase()}/api/auth/google`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ email: 'demo.google@gmail.com' })
@@ -1398,7 +1437,7 @@
         }
 
         try {
-            const response = await fetch('/api/export-pdf', {
+            const response = await fetch(`${getApiBase()}/api/export-pdf`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
